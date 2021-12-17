@@ -23,19 +23,57 @@ async function run() {
         await client.connect();
         const digitalMarketingConsultancy = client.db("digital_marketing_consultancy");
         const totalService = digitalMarketingConsultancy.collection("all_service");
+        const userAppoinmnets = digitalMarketingConsultancy.collection("user_appoinments")
         // get all service details 
-        app.get('/all-service', async(req, res)=>{
+        app.get('/all-service', async (req, res) => {
             const cursor = totalService.find({});
             const allService = await cursor.toArray();
             res.send(allService);
         })
         // get single service details by id 
-        app.get("/all-service/:id", async(req, res)=> {
+        app.get("/all-service/:id", async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const result = await totalService.findOne(query);
             res.send(result);
         })
+        // post user appoinment data from booking page 
+        app.post("/appoinment-data", async (req, res) => {
+            const data = req.body;
+            const result = await userAppoinmnets.insertOne(data);
+            res.json(result);
+        });
+        // get all appoinment data for admin 
+        app.get('/all-appoinments', async (req, res) => {
+            const cursor = userAppoinmnets.find({});
+            const allAppoinments = await cursor.toArray();
+            res.send(allAppoinments);
+        })
+        // get user appoinment for single user by email 
+        app.get("/appoinment-data", async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = userAppoinmnets.find(query);
+            const singleUserAppoinments = await cursor.toArray();
+            res.json(singleUserAppoinments);
+        });
+        // get all appoinment by single date for admin
+        app.get("/appoinment-data", async (req, res) => {
+            const date = req.query.date;
+            console.log(date);
+            const query = { date: date };
+            const cursor = userAppoinmnets.find(query);
+            const allAppoinments = await cursor.toArray();
+            res.json(allAppoinments);
+        });
+        // delete single appoinment by user 
+        app.delete("/appoinment/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await userAppoinmnets.deleteOne(query);
+            res.json(result);
+        }) 
 
     }
     finally {
