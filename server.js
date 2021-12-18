@@ -58,7 +58,7 @@ async function run() {
             res.json(singleUserAppoinments);
         });
         // get all appoinment by single date for admin
-        app.get("/appoinment-data", async (req, res) => {
+        app.get("/appoinments-for-admin", async (req, res) => {
             const date = req.query.date;
             console.log(date);
             const query = { date: date };
