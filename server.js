@@ -24,6 +24,7 @@ async function run() {
         const digitalMarketingConsultancy = client.db("digital_marketing_consultancy");
         const totalService = digitalMarketingConsultancy.collection("all_service");
         const userAppoinmnets = digitalMarketingConsultancy.collection("user_appoinments")
+        const userCollection = digitalMarketingConsultancy.collection("userCollection")
         // get all service details 
         app.get('/all-service', async (req, res) => {
             const cursor = totalService.find({});
@@ -74,6 +75,14 @@ async function run() {
             const result = await userAppoinmnets.deleteOne(query);
             res.json(result);
         }) 
+
+        // add user information 
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            console.log(result);
+            res.json(result);
+        });
 
     }
     finally {
